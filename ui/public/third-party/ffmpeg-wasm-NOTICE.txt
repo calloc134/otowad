@@ -1,0 +1,66 @@
+FFmpeg/WASM third-party notice
+================================
+
+This application distributes the following ffmpeg.wasm release artifacts for
+the optional audio-import compatibility path. They are loaded only after the
+browser's native Web Audio decoder reports an unsupported encoding.
+
+Release provenance
+------------------
+
+Upstream project: https://github.com/ffmpegwasm/ffmpeg.wasm
+Upstream release: https://github.com/ffmpegwasm/ffmpeg.wasm/releases/tag/v12.15
+Source tag: v12.15
+Source commit: 71aa99d37c02a7b4c435275ca9ef50e612f6efa1
+Complete release source and build scripts:
+https://github.com/ffmpegwasm/ffmpeg.wasm/tree/71aa99d37c02a7b4c435275ca9ef50e612f6efa1
+
+The application self-hosts the unmodified @ffmpeg/core WASM bytes in gzip
+form as ffmpeg-core-0.12.10.wasm.gz. The browser expands those bytes only when
+the compatibility decoder is first needed. Compression changes the transport
+representation, not the executable contents or license.
+
+Distributed packages
+--------------------
+
+@ffmpeg/core 0.12.10
+License: GNU General Public License v2.0 or later (GPL-2.0-or-later)
+Package: https://registry.npmjs.org/@ffmpeg/core/-/core-0.12.10.tgz
+Integrity: sha512-dzNplnn2Nxle2c2i2rrDhqcB19q9cglCkWnoMTDN9Q9l3PvdjZWd1HfSPjCNWc/p8Q3CT+Es9fWOR0UhAeYQZA==
+WASM SHA-256: 9f57947a5bd530d8f00c5b3f2cb2a3492faa7e5d823315342d6a8656d0a6b7b7
+License text: ./GPL-2.0.txt
+
+@ffmpeg/ffmpeg 0.12.15
+License: MIT
+Package: https://registry.npmjs.org/@ffmpeg/ffmpeg/-/ffmpeg-0.12.15.tgz
+Integrity: sha512-1C8Obr4GsN3xw+/1Ww6PFM84wSQAGsdoTuTWPOj2OizsRDLT4CXTaVjPhkw6ARyDus1B9X/L2LiXHqYYsGnRFw==
+
+@ffmpeg/types 0.12.4
+License: MIT
+Package: https://registry.npmjs.org/@ffmpeg/types/-/types-0.12.4.tgz
+Integrity: sha512-k9vJQNBGTxE5AhYDtOYR5rO5fKsspbg51gbcwtbkw2lCdoIILzklulcjJfIDwrtn7XhDeF2M+THwJ2FGrLeV6A==
+
+MIT license for @ffmpeg/ffmpeg and @ffmpeg/types
+-------------------------------------------------
+
+MIT License
+
+Copyright (c) 2019 Jerome Wu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

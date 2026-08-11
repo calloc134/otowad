@@ -1,0 +1,39 @@
+# Build outputs
+/core/target/
+/ui/node_modules/
+/ui/dist/
+/ui/dist-node/
+/ui/tsconfig.tsbuildinfo
+/ui/tsconfig.node.tsbuildinfo
+
+# Panda CSS generated code (rebuild with `npm --prefix ui run panda:codegen`)
+/ui/styled-system/
+
+# WASM generated files (rebuild with `npm run wasm` in ui/)
+/ui/src/wasm/
+# Generated from the pinned @ffmpeg/core package for dev/build serving.
+/ui/public/assets/ffmpeg-core-*.wasm.gz
+
+# Cloudflare Workers
+/ui/.wrangler/
+
+# Local audio samples / debug artifacts (do not commit)
+# Audio dropped at the repository root is scratch material by convention. Keep it out
+# rather than naming individual files, so provenance never has to be re-checked.
+/*.wav
+/*.wave
+/*.aif
+/*.aiff
+/*.flac
+/*.mp3
+/*.m4a
+/*.ogg
+/export-chat.json
+*.wav.tmp
+
+# OS files
+.DS_Store
+
+# Local benchmark/runtime caches
+__pycache__/
+*.pyc

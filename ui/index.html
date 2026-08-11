@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- `viewport-fit=cover` is what makes `env(safe-area-inset-*)` report
+         anything at all. Without it those values are always 0, so the insets
+         the shell and the action bars ask for do nothing on a notched phone. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>OTOWAD</title>
+
+    <!-- Installing to the home screen is the only way an iPhone gets a
+         fullscreen canvas: iOS Safari does not implement element fullscreen,
+         so the in-app button cannot help there. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#070a18" />
+
+    <!-- iOS honours the manifest's `display` only from 16.4 on. These keep
+         older iOS launching without browser chrome. `black-translucent` puts
+         the page under the status bar, which is what `viewport-fit=cover` and
+         the shell's safe-area insets are already built for. -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="OTOWAD" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

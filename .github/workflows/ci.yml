@@ -1,0 +1,290 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# PR は新しい push で打ち切ってよいが、main はデプロイ中に kill されると
+# 中途半端な状態になりうるので順番待ちさせる。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-audit:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: npm ci
+        working-directory: ui
+        run: npm ci
+
+      - name: npm audit
+        working-directory: ui
+        run: npm run audit:dependencies
+
+      - name: cargo audit
+        uses: rustsec/audit-check@v2.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          working-directory: core
+
+  core-test:
+    name: cargo test (core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core
+      - name: cargo fmt
+        working-directory: core
+        run: cargo fmt --check
+      - name: cargo clippy
+        working-directory: core
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: cargo test
+        working-directory: core
+        run: cargo test --all --locked
+
+  ui-check:
+    name: ui typecheck + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: core
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: npm ci
+        working-directory: ui
+        run: npm ci
+
+      - name: Build WASM artifact
+        working-directory: ui
+        run: npm run wasm
+
+      - name: Panda codegen
+        working-directory: ui
+        run: npm run panda:codegen
+
+      - name: Lint
+        working-directory: ui
+        run: npm run lint
+
+      - name: Dead code check
+        working-directory: ui
+        run: npm run lint:deadcode
+
+      - name: Typecheck
+        working-directory: ui
+        run: npm run typecheck
+
+      - name: Unit + contract tests
+        working-directory: ui
+        run: npm run test:unit
+
+      - name: Component tests (vitest)
+        working-directory: ui
+        run: npm run test:components
+
+      # デプロイ対象は「テストが通った成果物そのもの」にする。deploy 側で
+      # 再ビルドすると、検証したものと配信するものがずれる。
+      - name: Production build
+        working-directory: ui
+        run: npm run build
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-dist
+          path: ui/dist
+          retention-days: 7
+          if-no-files-found: error
+
+  deploy-production:
+    name: deploy production
+    needs: [dependency-audit, core-test, ui-check]
+    # `github.repository` を見るのは、この CI が公開ミラー (calloc134/otowad) にも
+    # そのまま同期されるためです。ミラーには Cloudflare の secret が無いので、
+    # 除外しないと main への同期ごとに必ず赤くなります。
+    # secret 不在で skip する形にはしていません。ここが「送信元では secret が無ければ
+    # 必ず落ちる」ことを保証している箇所なので、その信号は残します。
+    if: >-
+      github.repository == 'calloc134/otomad-daw-kento' &&
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. See spec-public/09 §8."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      # wrangler は ui の devDependencies 固定版を使う (lockfile と一致させる)。
+      - name: npm ci
+        working-directory: ui
+        run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-dist
+          path: ui/dist
+
+      - name: wrangler deploy
+        id: deploy
+        working-directory: ui
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # `--env=""` = トップレベル環境 (本番)。省略すると wrangler が
+          # 「環境が曖昧」と警告する。将来 error 化しても壊れないよう明示する。
+          npx wrangler deploy --env="" 2>&1 | tee deploy.log
+          # URL の抽出に失敗してもデプロイ自体は成功なので、既定値に落とす。
+          url="$(grep -oiE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -n1 || true)"
+          echo "url=${url:-https://otomad-daw.calloc134personal.workers.dev}" >> "$GITHUB_OUTPUT"
+
+  deploy-preview:
+    name: deploy preview
+    needs: [dependency-audit, core-test, ui-check]
+    # fork PR と dependabot には secrets が渡らないので、走らせても必ず失敗する。
+    # 公開ミラー上の PR も同じ理由で除外する (deploy-production のコメント参照)。
+    if: >-
+      github.repository == 'calloc134/otomad-daw-kento' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.url }}
+    # preview Worker は 1 つを全 PR で共有するため、同時デプロイを直列化する。
+    concurrency:
+      group: deploy-preview
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::CLOUDFLARE_API_TOKEN secret is not set. See spec-public/09 §8."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: npm ci
+        working-directory: ui
+        run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ui-dist
+          path: ui/dist
+
+      - name: wrangler deploy --env preview
+        id: deploy
+        working-directory: ui
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler deploy --env preview 2>&1 | tee deploy.log
+          # URL の抽出に失敗してもデプロイ自体は成功なので、既定値に落とす。
+          url="$(grep -oiE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -n1 || true)"
+          echo "url=${url:-https://otomad-daw-preview.calloc134personal.workers.dev}" >> "$GITHUB_OUTPUT"
+
+      - name: Comment preview URL
+        uses: actions/github-script@v7
+        env:
+          PREVIEW_URL: ${{ steps.deploy.outputs.url }}
+        with:
+          script: |
+            const marker = '<!-- otomad-daw-preview -->';
+            const sha = context.payload.pull_request.head.sha.slice(0, 7);
+            const body = [
+              marker,
+              '### 🚀 Preview deployed',
+              '',
+              `${process.env.PREVIEW_URL}`,
+              '',
+              `commit: \`${sha}\``,
+              '',
+              '> preview Worker は全 PR で共有です。別の PR がデプロイすると上書きされます。',
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+            });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

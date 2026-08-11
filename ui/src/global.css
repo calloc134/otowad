@@ -1,0 +1,248 @@
+:root {
+  color-scheme: dark;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  --font-family-ui: "Avenir Next", "Segoe UI", sans-serif;
+  --font-family-mono: "SFMono-Regular", "JetBrains Mono", ui-monospace, monospace;
+  --bg-app: #060915;
+  --bg-app-top: rgba(20, 27, 56, 0.92);
+  --bg-app-bottom: rgba(7, 10, 24, 0.98);
+  --bg-panel: rgba(11, 16, 34, 0.94);
+  --bg-panel-raised: rgba(18, 26, 52, 0.96);
+  --bg-panel-strong: rgba(25, 35, 69, 0.98);
+  --bg-panel-soft: rgba(15, 21, 42, 0.92);
+  --bg-button: linear-gradient(180deg, rgba(38, 51, 94, 0.95), rgba(18, 24, 47, 0.95));
+  --bg-button-hover: linear-gradient(180deg, rgba(55, 72, 126, 0.95), rgba(22, 30, 58, 0.98));
+  --bg-button-active: linear-gradient(180deg, rgba(66, 86, 150, 0.98), rgba(26, 35, 69, 0.98));
+  --bg-button-muted: linear-gradient(180deg, rgba(30, 39, 72, 0.92), rgba(15, 21, 42, 0.92));
+  --border-subtle: rgba(140, 160, 220, 0.16);
+  --border-strong: rgba(140, 170, 255, 0.28);
+  --border-accent: rgba(104, 182, 255, 0.38);
+  --text-primary: #f5f7ff;
+  --text-secondary: #d2daf8;
+  --text-muted: #9aa8cf;
+  --text-dim: #7280a8;
+  --accent-blue: #69b8ff;
+  --accent-blue-soft: rgba(105, 184, 255, 0.18);
+  --accent-green: #7fe5a5;
+  --accent-green-soft: rgba(127, 229, 165, 0.16);
+  --accent-amber: #f6c56c;
+  --accent-amber-soft: rgba(246, 197, 108, 0.16);
+  --accent-purple: #cda7ff;
+  --danger: #ff7587;
+  --danger-soft: rgba(255, 117, 135, 0.16);
+  --panel-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --panel-shadow-soft:
+    0 16px 30px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --glow-blue: 0 0 0 1px rgba(105, 184, 255, 0.26), 0 0 18px rgba(105, 184, 255, 0.14);
+  --glow-green: 0 0 0 1px rgba(127, 229, 165, 0.26), 0 0 18px rgba(127, 229, 165, 0.12);
+  --glow-amber: 0 0 0 1px rgba(246, 197, 108, 0.24), 0 0 18px rgba(246, 197, 108, 0.12);
+  --surface-shell: linear-gradient(180deg, rgba(19, 27, 54, 0.98), rgba(10, 14, 30, 0.98));
+  --surface-panel: rgba(11, 16, 34, 0.94);
+  --surface-panel-raised: rgba(18, 26, 52, 0.96);
+  --surface-panel-strong: rgba(25, 35, 69, 0.98);
+  --surface-panel-muted: rgba(15, 21, 42, 0.92);
+  --surface-interactive: var(--bg-button);
+  --surface-interactive-muted: var(--bg-button-muted);
+  --surface-interactive-active: var(--bg-button-active);
+  --surface-interactive-info: rgba(105, 184, 255, 0.12);
+  --surface-interactive-success: rgba(127, 229, 165, 0.15);
+  --surface-interactive-warning: rgba(246, 197, 108, 0.14);
+  --surface-interactive-danger: rgba(255, 117, 135, 0.16);
+  --surface-chip-neutral: rgba(11, 17, 36, 0.92);
+  --surface-chip-info: rgba(105, 184, 255, 0.1);
+  --surface-chip-success: rgba(127, 229, 165, 0.14);
+  --surface-chip-warning: rgba(246, 197, 108, 0.12);
+  --surface-chip-danger: rgba(255, 117, 135, 0.16);
+  --border-default: var(--border-subtle);
+  --border-emphasis: var(--border-strong);
+  --border-info: rgba(105, 184, 255, 0.36);
+  --border-success: rgba(127, 229, 165, 0.34);
+  --border-warning: rgba(246, 197, 108, 0.4);
+  --border-danger: rgba(255, 117, 135, 0.42);
+  --feedback-info: var(--accent-blue);
+  --feedback-success: var(--accent-green);
+  --feedback-warning: var(--accent-amber);
+  --feedback-danger: var(--danger);
+  --shadow-panel: var(--panel-shadow);
+  --shadow-soft: var(--panel-shadow-soft);
+  --shadow-glow-info: var(--glow-blue);
+  --shadow-glow-success: var(--glow-green);
+  --shadow-glow-warning: var(--glow-amber);
+
+  /* Editor / TrackList surfaces (added for Panda migration) */
+  --surface-editor-body:
+    linear-gradient(180deg, rgba(11, 16, 34, 0.98), rgba(7, 10, 24, 0.98));
+  --surface-editor-shell:
+    linear-gradient(180deg, rgba(12, 17, 35, 0.96), rgba(8, 12, 25, 0.98));
+  --surface-editor-ruler:
+    linear-gradient(180deg, rgba(15, 22, 43, 0.98), rgba(9, 13, 27, 0.98));
+  --surface-editor-header:
+    linear-gradient(180deg, rgba(22, 30, 58, 0.98), rgba(12, 18, 36, 0.98));
+  --surface-track-list:
+    linear-gradient(180deg, rgba(15, 21, 42, 0.98), rgba(9, 13, 27, 0.98));
+  --surface-track-row:
+    linear-gradient(180deg, rgba(16, 22, 44, 0.82), rgba(10, 14, 29, 0.92));
+  --surface-mobile-chrome: rgba(10, 14, 29, 0.82);
+  --border-frame-soft: rgba(137, 154, 212, 0.08);
+  --shadow-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --shadow-inset-frame-right: inset -1px 0 0 rgba(255, 255, 255, 0.03);
+
+  /* Selection / interaction overlays */
+  --overlay-time-selection: rgba(255, 183, 77, 0.18);
+  --overlay-time-selection-border: rgba(255, 183, 77, 0.65);
+  --overlay-warp-anchor: rgba(255, 200, 0, 0.8);
+  --overlay-drop-indicator-glow: 0 0 10px rgba(127, 229, 165, 0.45);
+
+  /* Clip surface local text/shadows */
+  --clip-title-color: #ffffff;
+  --clip-title-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  --clip-audio-label-bg: rgba(6, 10, 20, 0.22);
+  --clip-pitch-suffix: rgba(255, 255, 255, 0.7);
+  --clip-fine-pitch-suffix: rgba(255, 255, 255, 0.5);
+  --clip-gain-label: rgba(255, 255, 255, 0.7);
+  --clip-preview-label: rgba(255, 255, 255, 0.4);
+
+  /* TrackList local tones */
+  --track-type-badge-border: rgba(255, 255, 255, 0.08);
+  --track-name-input-bg: rgba(9, 14, 29, 0.96);
+  --track-pitch-link-text: rgba(246, 197, 108, 0.92);
+  --track-export-border: rgba(105, 184, 255, 0.32);
+  --track-export-bg: rgba(105, 184, 255, 0.14);
+  --track-delete-border: rgba(255, 117, 135, 0.32);
+
+  /* Busy overlay */
+  --overlay-busy:
+    radial-gradient(circle at top, rgba(54, 84, 154, 0.22), transparent 38%),
+    rgba(5, 8, 18, 0.9);
+  --surface-busy-card:
+    linear-gradient(180deg, rgba(22, 31, 59, 0.98), rgba(11, 16, 31, 0.98));
+  --shadow-busy-card:
+    0 28px 56px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --surface-busy-progress-track: rgba(255, 255, 255, 0.08);
+  --surface-busy-progress-fill:
+    linear-gradient(90deg, var(--accent-blue), #9dd0ff);
+
+  /* Portrait guidance card */
+  --overlay-portrait-backdrop: rgba(6, 10, 20, 0.94);
+  --surface-portrait-card:
+    linear-gradient(180deg, rgba(24, 34, 63, 0.98), rgba(13, 18, 34, 0.98));
+
+  /* Timeline overlays */
+  --border-lane-separator: #1a1a3a;
+  --text-timeline-ruler-label: #9299c4;
+  --border-timeline-ruler-label: #2a2a4a;
+  --overlay-playhead: #ef5350;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background:
+    radial-gradient(circle at top, rgba(37, 51, 102, 0.44), transparent 42%),
+    radial-gradient(circle at 80% 20%, rgba(88, 52, 129, 0.24), transparent 26%),
+    linear-gradient(180deg, var(--bg-app-top), var(--bg-app-bottom));
+  color: var(--text-primary);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background 120ms ease,
+    box-shadow 120ms ease,
+    color 120ms ease,
+    opacity 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input,
+select {
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--border-accent);
+  box-shadow: none;
+  outline: 2px solid rgba(105, 184, 255, 0.72);
+  outline-offset: 1px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(113, 132, 189, 0.55), rgba(61, 76, 122, 0.72));
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(8, 12, 25, 0.35);
+}
+
+/*
+ * Shared animation keyframes referenced by Panda css() classes across the app.
+ * - `busy-pulse` drives the busy overlay spinner (App.tsx).
+ * - `toolbar-spin` drives loader icons throughout the app (project management etc.).
+ */
+@keyframes toolbar-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes busy-pulse {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0) scale(0.72);
+    opacity: 0.35;
+  }
+
+  40% {
+    transform: translateY(-3px) scale(1);
+    opacity: 1;
+  }
+}

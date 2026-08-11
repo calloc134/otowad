@@ -1,0 +1,37 @@
+<!-- Source for ui/public/icons/icon-maskable-512.png.
+     Regenerate with ui/scripts/icons/render.sh after editing.
+
+     Maskable icons get cropped to whatever shape the launcher wants, so the
+     background is full-bleed (no rounded corners of our own) and the artwork is
+     scaled to sit inside the safe zone: a circle of radius 40% of the canvas.
+     At 0.78 scale the bar group's half-diagonal is ~182px against a 205px
+     safe radius, so nothing important survives only by luck. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141b38" />
+      <stop offset="1" stop-color="#070a18" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.12" r="0.75">
+      <stop offset="0" stop-color="#2a3a70" stop-opacity="0.75" />
+      <stop offset="1" stop-color="#2a3a70" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9dd0ff" />
+      <stop offset="1" stop-color="#69b8ff" />
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)" />
+  <rect width="512" height="512" fill="url(#glow)" />
+
+  <g transform="translate(256,256) scale(0.78) translate(-256,-256)">
+    <rect x="77"  y="201" width="34" height="110" rx="17" fill="url(#bar)" />
+    <rect x="131" y="156" width="34" height="200" rx="17" fill="url(#bar)" />
+    <rect x="185" y="106" width="34" height="300" rx="17" fill="#f6c56c" />
+    <rect x="239" y="181" width="34" height="150" rx="17" fill="url(#bar)" />
+    <rect x="293" y="126" width="34" height="260" rx="17" fill="#7fe5a5" />
+    <rect x="347" y="161" width="34" height="190" rx="17" fill="url(#bar)" />
+    <rect x="401" y="206" width="34" height="100" rx="17" fill="url(#bar)" />
+  </g>
+</svg>
