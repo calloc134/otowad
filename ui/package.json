@@ -32,7 +32,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.53.4",
+    "@pandacss/dev": "^2.2.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
